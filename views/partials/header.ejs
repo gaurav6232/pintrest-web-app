@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Document</title>
+ <link href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css" rel="stylesheet">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="/stylesheets/style.css">
+ 
+
+</head>
+<body>
+    <% if(nav === true){%>
+
+        <div class="w-full px-10 py-7 flex justify-between bg-zinc-700 text-white items-center black">
+            <div class="div w-10 h-10 bg-zinc-100 rounded-full">
+                <img class="w-full h-full object-cover" src="https://static-00.iconduck.com/assets.00/pinterest-icon-512x511-e2czduq2.png" alt="">
+            </div>
+            <h3>pinterest</h3>
+            <a href="/add">Create</a>
+            <div class="search absolute left-2/4">
+                <i class="ri-search-2-line"></i>
+                search
+            </div>
+            <input type="text" class="w-6/12 bg-red-700 rounded-lg">
+
+            <div class="flex gap-10 items-center">
+                 <a href="/profile">profile</a><a href="/feed">Home</a><a class="px-3 py-2 bg-red-700 text-white rounded-lg" href="/logout">logout</a>
+            </div>
+        </div>
+
+    <%} %>
+     
