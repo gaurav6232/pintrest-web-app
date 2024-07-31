@@ -10,9 +10,15 @@ const upload = require('./multer');
 passport.use(new localStrategy(userModel.authenticate()))
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',  function(req, res, next) {
   res.render('index',{nav: false});
 });
+
+
+router.get('/relogin', function(req, res, next) {
+  res.render('relogin',{nav: false});
+});
+
 
 router.get('/register', function(req, res, next) {
   res.render('register', {nav: false});
@@ -58,20 +64,48 @@ router.get('/add', isLoggedIn,async function(req, res, next) {
 });
 
 
+router.post('/createpost', isLoggedIn, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'video', maxCount: 1 }]), async function(req, res, next) {
+  try {
+    const user = await userModel.findOne({username: req.session.passport.user});
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-router.post('/createpost', isLoggedIn, upload.single("postimage"),async function(req, res, next) {
-  const user = await userModel.findOne({username: req.session.passport.user});
-  const post = await postModel.create({
-    user: user._id,
-    title: req.body.title,
-    description: req.body.description,
-    image: req.file.filename
-  })
+    let videofilename = '';
+    if (req.files['video'] && req.files['video'][0]) {
+      videofilename = req.files['video'][0].filename;
+    }
 
-  user.posts.push(post._id)
-  await user.save();
-  res.redirect("/profile")
+    if (!req.files['image'] || !req.files['image'][0] || !req.files['video'] || !req.files['video'][0] || !req.body.title || !req.body.description) {
+      throw new Error('Required fields missing or file not uploaded');
+    }
+
+    const post = await postModel.create({
+      user: user._id,
+      title: req.body.title,
+      description: req.body.description,
+      image: req.files['image'][0].filename,
+      video: videofilename
+    });
+
+    if (!post) {
+      throw new Error('Failed to create post');
+    }
+
+    user.posts.push(post._id);
+    await user.save();
+    res.redirect("/profile");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err.message); // Sending error message to client
+  }
 });
+
+
+
+
+
+
 
 
 
